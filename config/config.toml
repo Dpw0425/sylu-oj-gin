@@ -1,0 +1,93 @@
+[Mode]
+# 运行模式(debug: 调试, test: 测试, release: 正式)
+RunMode = "debug"
+
+[http]
+# http 监听地址
+Host = "127.0.0.1"
+# http 监听端口
+Port = 8080
+
+[Log]
+# 日志级别(-1: debug, 0: info, 1: warn, 2: error, 3: panic)
+Level = 0
+# 日志格式(支持输出格式：text/json)
+Format = "json"
+# 日志输出(支持：stdout/stderr/file)
+Output = "stdout"
+# 日志文件
+Lowfile = "./temp/low.log"
+Highfile = "./temp/high.log"
+
+[Mysql]
+# 连接地址
+Host = "59.110.137.58"
+# 连接端口
+Port = 3310
+# 用户名
+Username = "root"
+# 密码
+Password = "tc.524030"
+# 数据库
+DBName = "sylu_oj"
+# 连接参数
+Parameters = "charset=utf8mb4&parseTime=True&loc=Local&allowNativePasswords=true"
+
+# redis配置信息
+[Redis]
+# 地址
+Addr = "59.110.137.58:6379"
+# 密码
+Password = ""
+
+[Gorm]
+# 是否开启调试模式
+Debug = true
+# 数据库类型
+DBType = "MySQL"
+
+[Limit]
+#路由访问限制(一个小时次数)
+limit = 99999
+
+[Cors]
+# 是否启用
+Enable = false
+# 允许跨域请求的域名列表(*表示全部允许)
+AllowOrigins = ["*"]
+# 允许跨域请求的请求方式列表
+AllowMethods = ["GET", "POST", "PUT", "DELETE", "PATCH"]
+# 允许客户端与跨域请求一起使用的非简单标头的列表
+AllowHeaders = []
+# 请求是否可以包含cookie，HTTP身份验证或客户端SSL证书等用户凭据
+AllowCredentials = true
+# 可以缓存预检请求结果的时间(以秒为单位)
+MaxAge = 7200
+
+[JWT]
+# 是否启用
+Enable = true
+# 签名方式(支持：HS512/HS384/HS512)
+SigningMethod = "HS512"
+# 签名key
+SigningKey = "tich0425_sylu_oj"
+# 发行人
+Issuer = "tich0425"
+# 过期时间（单位秒）
+Expired = 604800
+# 存储(支持：file/redis)
+Store = "redis"
+# 文件路径
+FilePath = "/"
+# redis 数据库(如果存储方式是redis，则指定存储的数据库)
+RedisDB = 0
+# 存储到 redis 数据库中的键名前缀
+RedisPrefix = ""
+
+[Email]
+Host = "smtp.163.com"
+Smtp = "smtp.163.com:25"
+Addr = "tich0425@163.com"
+Name = "Go-IM-service"
+Password = "FLBUHLEVTPDMLUWY"
+Expires = 10 # 验证码过期时间 (10 min)

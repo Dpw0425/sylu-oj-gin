@@ -1,0 +1,33 @@
+basePath: /api/v1
+definitions:
+  error.ResponseNormal:
+    properties:
+      code:
+        description: 响应状态码
+        type: integer
+      data:
+        description: 返回内容
+      msg:
+        description: 返回消息
+        type: string
+    type: object
+info:
+  contact: {}
+  description: This is a backend server for sylu-oj.
+  title: sylu-oj
+  version: "1.0"
+paths:
+  /test/ping:
+    get:
+      consumes:
+      - application/json
+      description: 测试连接
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/error.ResponseNormal'
+      summary: 测试接口
+swagger: "2.0"
