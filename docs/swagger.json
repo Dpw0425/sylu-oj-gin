@@ -27,6 +27,66 @@
                     }
                 }
             }
+        },
+        "/user/register": {
+            "post": {
+                "description": "用户注册",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "注册接口",
+                "parameters": [
+                    {
+                        "description": "user message",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.UserRegister"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/error.ResponseNormal"
+                        }
+                    }
+                }
+            }
+        },
+        "/utils/email_verify": {
+            "get": {
+                "description": "发送邮箱验证码",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "邮箱验证接口",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user email",
+                        "name": "email",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/error.ResponseNormal"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -42,6 +102,23 @@
                 },
                 "msg": {
                     "description": "返回消息",
+                    "type": "string"
+                }
+            }
+        },
+        "schema.UserRegister": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "verify_code": {
                     "type": "string"
                 }
             }

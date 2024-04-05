@@ -11,6 +11,17 @@ definitions:
         description: 返回消息
         type: string
     type: object
+  schema.UserRegister:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+      verify_code:
+        type: string
+    type: object
 info:
   contact: {}
   description: This is a backend server for sylu-oj.
@@ -30,4 +41,43 @@ paths:
           schema:
             $ref: '#/definitions/error.ResponseNormal'
       summary: 测试接口
+  /user/register:
+    post:
+      consumes:
+      - application/json
+      description: 用户注册
+      parameters:
+      - description: user message
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schema.UserRegister'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/error.ResponseNormal'
+      summary: 注册接口
+  /utils/email_verify:
+    get:
+      consumes:
+      - application/json
+      description: 发送邮箱验证码
+      parameters:
+      - description: user email
+        in: query
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/error.ResponseNormal'
+      summary: 邮箱验证接口
 swagger: "2.0"

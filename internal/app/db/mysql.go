@@ -4,6 +4,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"sylu-oj-gin/internal/app/config"
+	"sylu-oj-gin/internal/app/entity"
 	"sylu-oj-gin/pkg/logger"
 )
 
@@ -14,6 +15,7 @@ func InitMysql() {
 		logger.Error("连接 Mysql 失败: %v", err)
 	} else {
 		// TODO: auto migrate
+		db.AutoMigrate(&entity.User{})
 
 		config.MYSQLDB = db
 		logger.Info("连接 Mysql 成功: %v", config.DSN(m))

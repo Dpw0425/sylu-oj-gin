@@ -3,6 +3,7 @@ package app
 import (
 	"github.com/gin-gonic/gin"
 	"sylu-oj-gin/internal/app/config"
+	"sylu-oj-gin/internal/app/middleware"
 	"sylu-oj-gin/internal/app/router"
 )
 
@@ -11,9 +12,10 @@ func InitGinEngine() *gin.Engine {
 
 	app := gin.Default()
 
-	// TODO: cors
+	if config.CONFIG.Cors.Enable {
+		app.Use(middleware.Cors())
+	}
 
-	// TODO: router register
 	router.Register(app)
 
 	return app

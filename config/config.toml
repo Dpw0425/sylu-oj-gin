@@ -88,6 +88,6 @@ RedisPrefix = ""
 Host = "smtp.163.com"
 Smtp = "smtp.163.com:25"
 Addr = "tich0425@163.com"
-Name = "Go-IM-service"
+Name = "sylu-oj-service"
 Password = "FLBUHLEVTPDMLUWY"
 Expires = 10 # 验证码过期时间 (10 min)

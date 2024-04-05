@@ -10,4 +10,9 @@ func TestRouters(app *gin.Engine) {
 	{
 		test.GET("/ping", api.Ping)
 	}
+
+	utils := app.Group("/utils")
+	{
+		utils.GET("/email_verify", api.SendEmailCode)
+	}
 }
