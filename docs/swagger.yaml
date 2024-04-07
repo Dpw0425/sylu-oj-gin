@@ -11,6 +11,19 @@ definitions:
         description: 返回消息
         type: string
     type: object
+  schema.AddQuestion:
+    properties:
+      content:
+        type: string
+      degree:
+        type: integer
+      tag:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+    type: object
   schema.UserLogin:
     properties:
       password:
@@ -35,6 +48,26 @@ info:
   title: sylu-oj
   version: "1.0"
 paths:
+  /question/add_question:
+    post:
+      consumes:
+      - application/json
+      description: 发布题目
+      parameters:
+      - description: question message
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schema.AddQuestion'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/error.ResponseNormal'
+      summary: 发布题目接口
   /test/ping:
     get:
       consumes:
@@ -67,7 +100,18 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/error.ResponseNormal'
-      summary: 登录接口
+  /user/logout:
+    get:
+      consumes:
+      - application/json
+      description: 退出登录
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/error.ResponseNormal'
   /user/register:
     post:
       consumes:
@@ -87,7 +131,6 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/error.ResponseNormal'
-      summary: 注册接口
   /utils/email_verify:
     get:
       consumes:

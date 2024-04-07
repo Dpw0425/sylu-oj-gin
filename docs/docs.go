@@ -15,6 +15,37 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/question/add_question": {
+            "post": {
+                "description": "发布题目",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "发布题目接口",
+                "parameters": [
+                    {
+                        "description": "question message",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.AddQuestion"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/error.ResponseNormal"
+                        }
+                    }
+                }
+            }
+        },
         "/test/ping": {
             "get": {
                 "description": "测试连接",
@@ -44,7 +75,6 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "登录接口",
                 "parameters": [
                     {
                         "description": "user message",
@@ -66,6 +96,25 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/logout": {
+            "get": {
+                "description": "退出登录",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/error.ResponseNormal"
+                        }
+                    }
+                }
+            }
+        },
         "/user/register": {
             "post": {
                 "description": "用户注册",
@@ -75,7 +124,6 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "注册接口",
                 "parameters": [
                     {
                         "description": "user message",
@@ -140,6 +188,26 @@ const docTemplate = `{
                 },
                 "msg": {
                     "description": "返回消息",
+                    "type": "string"
+                }
+            }
+        },
+        "schema.AddQuestion": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "degree": {
+                    "type": "integer"
+                },
+                "tag": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "title": {
                     "type": "string"
                 }
             }
