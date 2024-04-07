@@ -7,7 +7,7 @@ import (
 	"sylu-oj-gin/pkg/error"
 )
 
-// @Summary 注册接口
+// Register @Summary 注册接口
 // @Description 用户注册
 // @Param request body schema.UserRegister true "user message"
 // @Accept       json
@@ -24,7 +24,7 @@ func Register(c *gin.Context) {
 	service.Register(c, sur)
 }
 
-// @Summary 登录接口
+// Login @Summary 登录接口
 // @Description 用户登录
 // @Param request body schema.UserLogin true "user message"
 // @Accept       json
@@ -39,4 +39,17 @@ func Login(c *gin.Context) {
 	}
 
 	service.Login(c, sul)
+}
+
+// Logout @Summary 登出接口
+// @Description 退出登录
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  error.ResponseNormal
+// @Router       /user/logout [get]
+func Logout(c *gin.Context) {
+	c.Set("UserID", "")
+	c.Header("token", "")
+
+	error.Response(c, error.BadRequest, gin.H{}, "退出成功！")
 }

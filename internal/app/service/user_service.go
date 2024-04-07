@@ -62,7 +62,6 @@ func Login(c *gin.Context, sul schema.UserLogin) {
 		return
 	}
 
-	// TODO: 返回菜单
 	var srml = make([]schema.ResponseMenu, 0)
 	if eu.Authority == "admin" {
 		srml = append(srml, schema.ResponseMenu{
