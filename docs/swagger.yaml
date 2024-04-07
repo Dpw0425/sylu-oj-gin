@@ -11,6 +11,13 @@ definitions:
         description: 返回消息
         type: string
     type: object
+  schema.UserLogin:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
   schema.UserRegister:
     properties:
       email:
@@ -41,6 +48,26 @@ paths:
           schema:
             $ref: '#/definitions/error.ResponseNormal'
       summary: 测试接口
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: 用户登录
+      parameters:
+      - description: user message
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schema.UserLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/error.ResponseNormal'
+      summary: 登录接口
   /user/register:
     post:
       consumes:

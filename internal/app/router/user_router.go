@@ -8,6 +8,7 @@ import (
 func UserRouter(app *gin.Engine) {
 	user := app.Group("/user")
 	{
-		user.POST("register", api.Register)
+		user.POST("/register", api.Register) // 注册接口
+		user.POST("/login", api.Login)
 	}
 }
