@@ -16,6 +16,7 @@ func InitMysql() {
 	} else {
 		// TODO: auto migrate
 		db.AutoMigrate(&entity.User{})
+		db.AutoMigrate(&entity.Question{})
 
 		config.MYSQLDB = db
 		logger.Info("连接 Mysql 成功: %v", config.DSN(m))

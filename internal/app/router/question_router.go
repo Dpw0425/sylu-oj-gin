@@ -12,6 +12,7 @@ func QuestionRouter(app *gin.Engine) {
 		question.Use(middleware.Auth())
 		{
 			question.POST("/add_question", api.AddQuestion)
+			question.GET("/list", api.QuestionList)
 		}
 	}
 }

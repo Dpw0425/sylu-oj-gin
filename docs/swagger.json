@@ -17,7 +17,6 @@
                 "produces": [
                     "application/json"
                 ],
-                "summary": "发布题目接口",
                 "parameters": [
                     {
                         "description": "question message",
@@ -27,6 +26,65 @@
                         "schema": {
                             "$ref": "#/definitions/schema.AddQuestion"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/error.ResponseNormal"
+                        }
+                    }
+                }
+            }
+        },
+        "/question/list": {
+            "get": {
+                "description": "查看题目列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "page number",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "rows per page",
+                        "name": "number",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "question title",
+                        "name": "search_title",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "question tag",
+                        "name": "search_tag",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "description": "question degree",
+                        "name": "search_degree",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "description": "reorder",
+                        "name": "order",
+                        "in": "query"
                     }
                 ],
                 "responses": {

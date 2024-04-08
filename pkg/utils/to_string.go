@@ -7,3 +7,9 @@ func ArrToString(arr []string) string {
 
 	return result
 }
+
+func StringToArr(str string) []string {
+	result := strings.Split(str, ",")
+
+	return result
+}

@@ -67,7 +67,45 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/error.ResponseNormal'
-      summary: 发布题目接口
+  /question/list:
+    get:
+      consumes:
+      - application/json
+      description: 查看题目列表
+      parameters:
+      - description: page number
+        in: query
+        name: page
+        required: true
+        type: number
+      - description: rows per page
+        in: query
+        name: number
+        required: true
+        type: number
+      - description: question title
+        in: query
+        name: search_title
+        type: string
+      - description: question tag
+        in: query
+        name: search_tag
+        type: string
+      - description: question degree
+        in: query
+        name: search_degree
+        type: number
+      - description: reorder
+        in: query
+        name: order
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/error.ResponseNormal'
   /test/ping:
     get:
       consumes:

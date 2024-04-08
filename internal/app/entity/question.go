@@ -9,7 +9,7 @@ type Question struct {
 	Tag         string  `gorm:"omitempty" json:"tag"`
 	Degree      uint    `gorm:"not null" json:"degree"`
 	PassingRate float64 `json:"passing_rate"`
-	OwnerID     uint    `json:"owner_id"`
+	OwnerID     int     `json:"owner_id"`
 }
 
 var TagArr []string
