@@ -66,36 +66,36 @@ func Login(c *gin.Context, sul schema.UserLogin) {
 	if eu.Authority == "admin" {
 		srml = append(srml, schema.ResponseMenu{
 			ID:    "1",
-			Title: "退出登录",
-			Path:  "", // TODO: ADD PATH
+			Title: "个人主页",
+			Path:  "/admin",
 		})
 		srml = append(srml, schema.ResponseMenu{
 			ID:    "2",
-			Title: "个人中心",
-			Path:  "", // TODO: ADD PATH
-		})
-		srml = append(srml, schema.ResponseMenu{
-			ID:    "3",
 			Title: "用户管理",
-			Path:  "", // TODO: ADD PATH
+			Path:  "/logout",
 		})
 		srml = append(srml, schema.ResponseMenu{
 			ID:    "4",
-			Title: "添加题目",
-			Path:  "", // TODO: ADD PATH
+			Title: "题目管理",
+			Path:  "/admin/problems",
+		})
+		srml = append(srml, schema.ResponseMenu{
+			ID:    "5",
+			Title: "退出登录",
+			Path:  "/logout",
 		})
 	} else {
 		srml = append(srml, schema.ResponseMenu{
 			ID:    "1",
-			Title: "退出登录",
-			Path:  "", // TODO: ADD PATH
+			Title: "个人主页",
+			Path:  "/user",
 		})
 		srml = append(srml, schema.ResponseMenu{
 			ID:    "2",
-			Title: "个人中心",
-			Path:  "", // TODO: ADD PATH
+			Title: "退出登录",
+			Path:  "/logout",
 		})
 	}
 
-	error.Response(c, error.OK, gin.H{"token": token, "menu": srml}, "登录成功！")
+	error.Response(c, error.OK, gin.H{"token": token, "menu": srml, "username": eu.Username}, "登录成功！")
 }

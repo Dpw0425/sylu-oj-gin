@@ -17,6 +17,8 @@ func AddQuestion(c *gin.Context, saq schema.AddQuestion, uid int) {
 	eq.Tag = utils.ArrToString(saq.Tag)
 	eq.Degree = saq.Degree
 	eq.OwnerID = uid
+	eq.InputTest = saq.InputTest
+	eq.ExpectedOutput = saq.ExpectedOutput
 	result := config.MYSQLDB.Table("questions").Create(&eq)
 	if result.Error != nil {
 		error.Response(c, error.BadRequest, gin.H{}, "发布失败！")
@@ -112,6 +114,25 @@ func GetQuestionMsg(c *gin.Context, id int) {
 	error.Response(c, error.OK, gin.H{"question_msg": sq}, "查询成功！")
 }
 
-func CommitAnswer(c *gin.Context, sa schema.Answer) {
+func CommitAnswer(c *gin.Context, sa schema.Answer, uid int) {
+	var eq entity.Question
+	result := config.MYSQLDB.Table("questions").Where("id = ?", sa.ID).First(&eq)
+	if result.Error != nil {
+		error.Response(c, error.BadRequest, gin.H{}, "提交失败！")
+		return
+	}
 
+	var ea entity.Answer
+	ea.UserID = uid
+	ea.Answer = sa.Answer
+	ea.QuestionID = eq.ID
+	result1 := config.MYSQLDB.Table("answers").Create(&ea)
+	if result1.Error != nil {
+		error.Response(c, error.BadRequest, gin.H{}, "提交失败！")
+		return
+	}
+
+	result2 := utils.Judge(sa.Answer, eq.InputTest, eq.ExpectedOutput)
+
+	error.Response(c, error.OK, gin.H{"result": result2}, "提交成功！")
 }

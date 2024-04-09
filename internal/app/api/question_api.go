@@ -78,5 +78,8 @@ func CommitAnswer(c *gin.Context) {
 		return
 	}
 
-	service.CommitAnswer(c, sa)
+	id, _ := c.Get("UserID")
+	uid := id.(int)
+
+	service.CommitAnswer(c, sa, uid)
 }

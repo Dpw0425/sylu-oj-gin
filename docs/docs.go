@@ -317,6 +317,12 @@ const docTemplate = `{
                 "degree": {
                     "type": "integer"
                 },
+                "expected_output": {
+                    "type": "string"
+                },
+                "input_test": {
+                    "type": "string"
+                },
                 "tag": {
                     "type": "array",
                     "items": {
@@ -333,6 +339,9 @@ const docTemplate = `{
             "properties": {
                 "answer": {
                     "type": "string"
+                },
+                "id": {
+                    "type": "integer"
                 }
             }
         },
