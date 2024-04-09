@@ -13,6 +13,8 @@ func QuestionRouter(app *gin.Engine) {
 		{
 			question.POST("/add_question", api.AddQuestion)
 			question.GET("/list", api.QuestionList)
+			question.GET("/get_question_msg", api.GetQuestionMsg)
+			question.POST("/commit_answer", api.CommitAnswer)
 		}
 	}
 }

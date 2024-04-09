@@ -45,6 +45,64 @@ const docTemplate = `{
                 }
             }
         },
+        "/question/commit_answer": {
+            "post": {
+                "description": "查看题目详情",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "description": "commit your answer of question",
+                        "name": "answer",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.Answer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/error.ResponseNormal"
+                        }
+                    }
+                }
+            }
+        },
+        "/question/get_question_msg": {
+            "get": {
+                "description": "查看题目详情",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "get question message",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/error.ResponseNormal"
+                        }
+                    }
+                }
+            }
+        },
         "/question/list": {
             "get": {
                 "description": "查看题目列表",
@@ -266,6 +324,14 @@ const docTemplate = `{
                     }
                 },
                 "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.Answer": {
+            "type": "object",
+            "properties": {
+                "answer": {
                     "type": "string"
                 }
             }

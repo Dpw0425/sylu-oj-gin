@@ -93,3 +93,25 @@ func QuestionList(c *gin.Context, page int, number int, searchTitle string, sear
 
 	error.Response(c, error.OK, gin.H{"question_list": sqml}, "查询成功！")
 }
+
+func GetQuestionMsg(c *gin.Context, id int) {
+	var sq schema.Question
+	var eq entity.Question
+	result := config.MYSQLDB.Table("questions").Where("id = ?", id).First(&eq)
+	if result.Error != nil {
+		error.Response(c, error.BadRequest, gin.H{}, "查询失败！")
+		return
+	}
+
+	sq.ID = int(eq.ID)
+	sq.Title = eq.Title
+	sq.Content = eq.Content
+	sq.Tag = utils.StringToArr(eq.Tag)
+	sq.Degree = int(eq.Degree)
+
+	error.Response(c, error.OK, gin.H{"question_msg": sq}, "查询成功！")
+}
+
+func CommitAnswer(c *gin.Context, sa schema.Answer) {
+
+}

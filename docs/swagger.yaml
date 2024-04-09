@@ -24,6 +24,11 @@ definitions:
       title:
         type: string
     type: object
+  schema.Answer:
+    properties:
+      answer:
+        type: string
+    type: object
   schema.UserLogin:
     properties:
       password:
@@ -60,6 +65,43 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/schema.AddQuestion'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/error.ResponseNormal'
+  /question/commit_answer:
+    post:
+      consumes:
+      - application/json
+      description: 查看题目详情
+      parameters:
+      - description: commit your answer of question
+        in: body
+        name: answer
+        required: true
+        schema:
+          $ref: '#/definitions/schema.Answer'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/error.ResponseNormal'
+  /question/get_question_msg:
+    get:
+      consumes:
+      - application/json
+      description: 查看题目详情
+      parameters:
+      - description: get question message
+        in: query
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
