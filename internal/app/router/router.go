@@ -22,5 +22,6 @@ func RegisterAPI(app *gin.Engine) {
 		TestRouters(app)
 		UserRouter(app)
 		QuestionRouter(app)
+		ExamRouter(app)
 	}
 }

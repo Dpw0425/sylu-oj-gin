@@ -15,6 +15,36 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/exam/add_exam": {
+            "post": {
+                "description": "创建实验",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "description": "exam message",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.AddExam"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/error.ResponseNormal"
+                        }
+                    }
+                }
+            }
+        },
         "/question/add_question": {
             "post": {
                 "description": "发布题目",
@@ -63,6 +93,34 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/schema.Answer"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/error.ResponseNormal"
+                        }
+                    }
+                }
+            }
+        },
+        "/question/del": {
+            "delete": {
+                "description": "删除题目",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "question id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -305,6 +363,20 @@ const docTemplate = `{
                 "msg": {
                     "description": "返回消息",
                     "type": "string"
+                }
+            }
+        },
+        "schema.AddExam": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "student": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },

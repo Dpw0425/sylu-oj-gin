@@ -15,6 +15,7 @@ func QuestionRouter(app *gin.Engine) {
 			question.GET("/list", api.QuestionList)
 			question.GET("/get_question_msg", api.GetQuestionMsg)
 			question.POST("/commit_answer", api.CommitAnswer)
+			question.DELETE("/del", api.DelQuestion)
 		}
 	}
 }

@@ -11,6 +11,15 @@ definitions:
         description: 返回消息
         type: string
     type: object
+  schema.AddExam:
+    properties:
+      name:
+        type: string
+      student:
+        items:
+          type: string
+        type: array
+    type: object
   schema.AddQuestion:
     properties:
       content:
@@ -59,6 +68,25 @@ info:
   title: sylu-oj
   version: "1.0"
 paths:
+  /exam/add_exam:
+    post:
+      consumes:
+      - application/json
+      description: 创建实验
+      parameters:
+      - description: exam message
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schema.AddExam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/error.ResponseNormal'
   /question/add_question:
     post:
       consumes:
@@ -90,6 +118,24 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/schema.Answer'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/error.ResponseNormal'
+  /question/del:
+    delete:
+      consumes:
+      - application/json
+      description: 删除题目
+      parameters:
+      - description: question id
+        in: query
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:

@@ -18,6 +18,7 @@ func InitMysql() {
 		db.AutoMigrate(&entity.User{})
 		db.AutoMigrate(&entity.Question{})
 		db.AutoMigrate(&entity.Answer{})
+		db.AutoMigrate(&entity.Exam{})
 
 		config.MYSQLDB = db
 		logger.Info("连接 Mysql 成功: %v", config.DSN(m))

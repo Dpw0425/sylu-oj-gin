@@ -83,3 +83,19 @@ func CommitAnswer(c *gin.Context) {
 
 	service.CommitAnswer(c, sa, uid)
 }
+
+// DelQuestion @Summary 删除题目接口
+// @Description 删除题目
+// @Param id query int true "question id"
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  error.ResponseNormal
+// @Router       /question/del [delete]
+func DelQuestion(c *gin.Context) {
+	qid, _ := strconv.Atoi(c.Query("id"))
+
+	id, _ := c.Get("UserID")
+	uid := id.(int)
+
+	service.DelQuestion(c, qid, uid)
+}

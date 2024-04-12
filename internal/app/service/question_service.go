@@ -136,3 +136,34 @@ func CommitAnswer(c *gin.Context, sa schema.Answer, uid int) {
 
 	error.Response(c, error.OK, gin.H{"result": result2}, "提交成功！")
 }
+
+func DelQuestion(c *gin.Context, qid int, uid int) {
+	var eq entity.Question
+	result := config.MYSQLDB.Table("questions").Where("id = ?", qid).First(&eq)
+	if result.Error != nil {
+		error.Response(c, error.BadRequest, gin.H{}, "获取题目失败！")
+		return
+	}
+
+	if eq.OwnerID != uid {
+		error.Response(c, error.BadRequest, gin.H{}, "您无权删除！")
+		return
+	}
+
+	tx := config.MYSQLDB.Begin()
+	result1 := tx.Table("questions").Where("id = ?", qid).Delete(&eq)
+	if result1.Error != nil {
+		error.Response(c, error.BadRequest, gin.H{}, "删除失败！")
+		tx.Rollback()
+		return
+	}
+	result2 := tx.Table("answers").Where("question_id = ?", qid).Delete(&entity.Answer{})
+	if result2.Error != nil {
+		error.Response(c, error.BadRequest, gin.H{}, "删除失败！")
+		tx.Rollback()
+		return
+	}
+
+	tx.Commit()
+	error.Response(c, error.OK, gin.H{}, "删除成功！")
+}
