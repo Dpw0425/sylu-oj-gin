@@ -87,6 +87,7 @@ func QuestionList(c *gin.Context, page int, number int, searchTitle string, sear
 
 	var sqm schema.QuestionMsg
 	for _, eq := range eql {
+		sqm.ID = eq.ID
 		sqm.Title = eq.Title
 		sqm.Tag = utils.StringToArr(eq.Tag)
 		sqm.Degree = eq.Degree

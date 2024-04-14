@@ -10,6 +10,7 @@ type AddQuestion struct {
 }
 
 type QuestionMsg struct {
+	ID     uint     `json:"id"`
 	Title  string   `json:"title"`
 	Tag    []string `json:"tag"`
 	Degree uint     `json:"degree"`
