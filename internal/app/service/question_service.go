@@ -11,21 +11,35 @@ import (
 )
 
 func AddQuestion(c *gin.Context, saq schema.AddQuestion, uid int) {
+	tx := config.MYSQLDB.Begin()
 	var eq entity.Question
 	eq.Title = saq.Title
 	eq.Content = saq.Content
 	eq.Tag = utils.ArrToString(saq.Tag)
 	eq.Degree = saq.Degree
 	eq.OwnerID = uid
-	eq.InputTest = saq.InputTest
-	eq.ExpectedOutput = saq.ExpectedOutput
 	result := config.MYSQLDB.Table("questions").Create(&eq)
 	if result.Error != nil {
 		error.Response(c, error.BadRequest, gin.H{}, "发布失败！")
+		tx.Rollback()
 		return
 	}
 
+	var etd entity.TestData
+	for _, value := range saq.IO {
+		etd.QID = eq.ID
+		etd.Input = value.Input
+		etd.Output = value.Output
+		result := config.MYSQLDB.Table("test_data").Create(&etd)
+		if result.Error != nil {
+			error.Response(c, error.BadRequest, gin.H{}, "发布失败！")
+			tx.Rollback()
+			return
+		}
+	}
+
 	error.Response(c, error.OK, gin.H{}, "发布成功！")
+	tx.Commit()
 }
 
 func QuestionList(c *gin.Context, page int, number int, searchTitle string, searchTag string, searchDegree int, order int) {
@@ -132,8 +146,25 @@ func CommitAnswer(c *gin.Context, sa schema.Answer, uid int) {
 		error.Response(c, error.BadRequest, gin.H{}, "提交失败！")
 		return
 	}
+	// TODO: Using a thread pool to start the question machine
+	var result2 string
+	var etdl = make([]entity.TestData, 0)
+	result3 := config.MYSQLDB.Table("test_data").Where("qid = ?", sa.ID).Find(&etdl)
+	if result3.Error != nil {
+		error.Response(c, error.BadRequest, gin.H{}, "提交失败！")
+		return
+	}
 
-	result2 := utils.Judge(sa.Answer, eq.InputTest, eq.ExpectedOutput)
+	for _, value := range etdl {
+		if flag := utils.Judge(sa.Answer, value.Input, value.Output); flag != "Accepted" {
+			result2 = flag
+			break
+		}
+	}
+
+	if result2 == "" {
+		result2 = "Accepted"
+	}
 
 	error.Response(c, error.OK, gin.H{"result": result2}, "提交成功！")
 }

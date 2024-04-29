@@ -1,12 +1,16 @@
 package schema
 
 type AddQuestion struct {
-	Title          string   `json:"title"`
-	Content        string   `json:"content"`
-	Tag            []string `json:"tag"`
-	Degree         uint     `json:"degree"`
-	InputTest      string   `json:"input_test"`
-	ExpectedOutput string   `json:"expected_output"`
+	Title   string     `json:"title"`
+	Content string     `json:"content"`
+	Tag     []string   `json:"tag"`
+	Degree  uint       `json:"degree"`
+	IO      []TestData `json:"io"`
+}
+
+type TestData struct {
+	Input  string `json:"input"`
+	Output string `json:"output"`
 }
 
 type QuestionMsg struct {
