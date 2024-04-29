@@ -53,3 +53,10 @@ func Logout(c *gin.Context) {
 
 	error.Response(c, error.BadRequest, gin.H{}, "退出成功！")
 }
+
+func UserInfo(c *gin.Context) {
+	id, _ := c.Get("UserID")
+	uid := id.(int)
+
+	service.UserInfo(c, uid)
+}

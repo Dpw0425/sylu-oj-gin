@@ -17,3 +17,8 @@ type ResponseMenu struct {
 	Title string `json:"title"`
 	Path  string `json:"path"`
 }
+
+type UserInfo struct {
+	Identity string         `json:"identity"`
+	Menu     []ResponseMenu `json:"menu"`
+}

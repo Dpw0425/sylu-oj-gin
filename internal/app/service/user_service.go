@@ -62,40 +62,47 @@ func Login(c *gin.Context, sul schema.UserLogin) {
 		return
 	}
 
-	var srml = make([]schema.ResponseMenu, 0)
+	error.Response(c, error.OK, gin.H{"token": token, "username": eu.Username}, "登录成功！")
+}
+
+func UserInfo(c *gin.Context, id int) {
+	var eu entity.User
+	if result := config.MYSQLDB.Table("Users").Where("id = ?", id).First(&eu); result.Error != nil {
+		error.Response(c, error.BadRequest, gin.H{}, "获取用户信息失败！")
+		return
+	}
+
+	var sui schema.UserInfo
 	if eu.Authority == "admin" {
-		srml = append(srml, schema.ResponseMenu{
-			ID:    "1",
-			Title: "个人主页",
-			Path:  "/admin",
-		})
-		srml = append(srml, schema.ResponseMenu{
-			ID:    "2",
-			Title: "用户管理",
-			Path:  "/logout",
-		})
-		srml = append(srml, schema.ResponseMenu{
-			ID:    "4",
+		sui.Identity = "admin"
+		sui.Menu = append(sui.Menu, schema.ResponseMenu{
+			ID:    "3",
 			Title: "题目管理",
-			Path:  "/admin/problems",
+			Path:  "/console/problem",
 		})
-		srml = append(srml, schema.ResponseMenu{
+		sui.Menu = append(sui.Menu, schema.ResponseMenu{
+			ID:    "4",
+			Title: "用户管理",
+			Path:  "/console/user",
+		})
+		sui.Menu = append(sui.Menu, schema.ResponseMenu{
 			ID:    "5",
-			Title: "退出登录",
-			Path:  "/logout",
+			Title: "添加题目",
+			Path:  "/console/addproblem",
 		})
 	} else {
-		srml = append(srml, schema.ResponseMenu{
+		sui.Identity = "guest"
+		sui.Menu = append(sui.Menu, schema.ResponseMenu{
 			ID:    "1",
 			Title: "个人主页",
 			Path:  "/user",
 		})
-		srml = append(srml, schema.ResponseMenu{
+		sui.Menu = append(sui.Menu, schema.ResponseMenu{
 			ID:    "2",
 			Title: "退出登录",
 			Path:  "/logout",
 		})
 	}
 
-	error.Response(c, error.OK, gin.H{"token": token, "menu": srml, "username": eu.Username}, "登录成功！")
+	error.Response(c, error.OK, gin.H{"identity": sui.Identity, "menu": sui.Menu}, "欢迎！")
 }
