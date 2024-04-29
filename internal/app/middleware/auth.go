@@ -10,7 +10,7 @@ func Auth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		// 获取 Token
-		tokenString := c.GetHeader("token")
+		tokenString := c.GetHeader("Authorization")
 		if tokenString == "" {
 			error.Response(c, error.Unauth, gin.H{}, "未登录！")
 			c.Abort()
