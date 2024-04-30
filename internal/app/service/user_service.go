@@ -67,7 +67,7 @@ func Login(c *gin.Context, sul schema.UserLogin) {
 
 func UserInfo(c *gin.Context, id int) {
 	var eu entity.User
-	if result := config.MYSQLDB.Table("Users").Where("id = ?", id).First(&eu); result.Error != nil {
+	if result := config.MYSQLDB.Table("users").Where("id = ?", id).First(&eu); result.Error != nil {
 		error.Response(c, error.BadRequest, gin.H{}, "获取用户信息失败！")
 		return
 	}

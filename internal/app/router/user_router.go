@@ -15,7 +15,7 @@ func UserRouter(app *gin.Engine) {
 
 		user.Use(middleware.Auth())
 		{
-			user.GET("/userinfo")
+			user.GET("/userinfo", api.UserInfo)
 		}
 	}
 }
