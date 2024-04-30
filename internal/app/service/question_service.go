@@ -18,7 +18,7 @@ func AddQuestion(c *gin.Context, saq schema.AddQuestion, uid int) {
 	eq.Tag = utils.ArrToString(saq.Tag)
 	eq.Degree = saq.Degree
 	eq.OwnerID = uid
-	result := config.MYSQLDB.Table("questions").Create(&eq)
+	result := tx.Table("questions").Create(&eq)
 	if result.Error != nil {
 		error.Response(c, error.BadRequest, gin.H{}, "发布失败！")
 		tx.Rollback()
@@ -30,7 +30,7 @@ func AddQuestion(c *gin.Context, saq schema.AddQuestion, uid int) {
 		etd.QID = eq.ID
 		etd.Input = value.Input
 		etd.Output = value.Output
-		result := config.MYSQLDB.Table("test_data").Create(&etd)
+		result := tx.Table("test_data").Create(&etd)
 		if result.Error != nil {
 			error.Response(c, error.BadRequest, gin.H{}, "发布失败！")
 			tx.Rollback()
@@ -130,10 +130,13 @@ func GetQuestionMsg(c *gin.Context, id int) {
 }
 
 func CommitAnswer(c *gin.Context, sa schema.Answer, uid int) {
+	tx := config.MYSQLDB
+
 	var eq entity.Question
-	result := config.MYSQLDB.Table("questions").Where("id = ?", sa.ID).First(&eq)
+	result := tx.Table("questions").Where("id = ?", sa.ID).First(&eq)
 	if result.Error != nil {
 		error.Response(c, error.BadRequest, gin.H{}, "提交失败！")
+		tx.Rollback()
 		return
 	}
 
@@ -141,19 +144,23 @@ func CommitAnswer(c *gin.Context, sa schema.Answer, uid int) {
 	ea.UserID = uid
 	ea.Answer = sa.Answer
 	ea.QuestionID = eq.ID
-	result1 := config.MYSQLDB.Table("answers").Create(&ea)
+	result1 := tx.Table("answers").Create(&ea)
 	if result1.Error != nil {
 		error.Response(c, error.BadRequest, gin.H{}, "提交失败！")
+		tx.Rollback()
 		return
 	}
 	// TODO: Using a thread pool to start the question machine
 	var result2 string
 	var etdl = make([]entity.TestData, 0)
-	result3 := config.MYSQLDB.Table("test_data").Where("qid = ?", sa.ID).Find(&etdl)
+	result3 := tx.Table("test_data").Where("q_id = ?", sa.ID).Find(&etdl)
 	if result3.Error != nil {
 		error.Response(c, error.BadRequest, gin.H{}, "提交失败！")
+		tx.Rollback()
 		return
 	}
+
+	tx.Commit()
 
 	for _, value := range etdl {
 		if flag := utils.Judge(sa.Answer, value.Input, value.Output); flag != "Accepted" {
