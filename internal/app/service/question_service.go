@@ -11,7 +11,9 @@ import (
 )
 
 func AddQuestion(c *gin.Context, saq schema.AddQuestion, uid int) {
-	tx := config.MYSQLDB.Begin()
+	newDB := config.MYSQLDB.Session(&gorm.Session{NewDB: true})
+	tx := newDB.Begin()
+
 	var eq entity.Question
 	eq.Title = saq.Title
 	eq.Content = saq.Content
@@ -130,7 +132,8 @@ func GetQuestionMsg(c *gin.Context, id int) {
 }
 
 func CommitAnswer(c *gin.Context, sa schema.Answer, uid int) {
-	tx := config.MYSQLDB
+	newDB := config.MYSQLDB.Session(&gorm.Session{NewDB: true})
+	tx := newDB.Begin()
 
 	var eq entity.Question
 	result := tx.Table("questions").Where("id = ?", sa.ID).First(&eq)

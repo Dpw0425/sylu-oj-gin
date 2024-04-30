@@ -11,6 +11,11 @@ import (
 func InitMysql() {
 	m := config.CONFIG.Mysql
 	db, err := gorm.Open(mysql.Open(config.DSN(m)), &gorm.Config{})
+
+	dbConf, _ := db.DB()
+	dbConf.SetMaxIdleConns(10)
+	dbConf.SetMaxOpenConns(100)
+
 	if err != nil {
 		logger.Error("连接 Mysql 失败: %v", err)
 	} else {
