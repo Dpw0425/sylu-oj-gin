@@ -12,6 +12,7 @@ func ExamRouter(app *gin.Engine) {
 		exam.Use(middleware.Auth())
 		{
 			exam.POST("/add_exam", api.AddExam)
+			exam.POST("/add_question", api.AddQuestionToExam)
 		}
 	}
 }

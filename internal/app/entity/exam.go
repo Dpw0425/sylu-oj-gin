@@ -6,4 +6,5 @@ type Exam struct {
 	gorm.Model
 	Name    string `json:"name"`
 	Student string `json:"student"`
+	OwnerID int    `json:"owner_id"`
 }

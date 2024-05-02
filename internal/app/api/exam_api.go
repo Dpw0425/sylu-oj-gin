@@ -23,3 +23,13 @@ func AddExam(c *gin.Context) {
 
 	service.AddExam(c, sae)
 }
+
+func AddQuestionToExam(c *gin.Context) {
+	var saq schema.AddQuestionToExam
+	if err := c.ShouldBindJSON(&saq); err != nil {
+		error.Response(c, error.BadRequest, gin.H{}, "输入内容有误！")
+		return
+	}
+
+	service.AddQuestionToExam(c, saq)
+}
