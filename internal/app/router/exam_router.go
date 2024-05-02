@@ -13,6 +13,7 @@ func ExamRouter(app *gin.Engine) {
 		{
 			exam.POST("/add_exam", api.AddExam)
 			exam.POST("/add_question", api.AddQuestionToExam)
+			exam.GET("/inspect", api.Inspect)
 		}
 	}
 }
