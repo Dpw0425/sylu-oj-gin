@@ -68,24 +68,43 @@ func AddQuestionToExam(c *gin.Context, saq schema.AddQuestionToExam) {
 	error.Response(c, error.OK, gin.H{}, "添加成功！")
 }
 
-func Inspect(c *gin.Context, eid, qid int) {
-	var esql = make([]entity.StudentQuestion, 0)
+func Inspect(c *gin.Context, eid int) {
 	var sesrl = make([]schema.ExamStatusResp, 0)
 	var sesr schema.ExamStatusResp
-	result := config.MYSQLDB.Table("student_questions").Where("exam_id = ? and question_id = ?", eid, qid).Find(&esql)
+
+	var passList []string
+	// 获取实验内的全部学生
+	result := config.MYSQLDB.Table("student_questions").
+		Select("username").
+		Where("status = ? AND exam_id = ?", "pass", eid).
+		Group("username").
+		Having("COUNT(DISTINCT question_id) = ?", config.MYSQLDB.Table("student_questions").Where("status = ?", "pass").Select("COUNT(DISTINCT question_id)")).
+		Pluck("username", &passList)
 	if result.Error != nil {
 		error.Response(c, error.BadRequest, gin.H{}, "查询失败！")
 		return
 	}
 
-	for _, esql := range esql {
-		sesr.Username = esql.Username
-		sesr.Status = esql.Status
-		result1 := config.MYSQLDB.Table("users").Where("username = ?", esql.Username).First(&sesr.ID)
-		if result1.Error != nil {
-			error.Response(c, error.BadRequest, gin.H{}, "查询失败！")
-			return
-		}
+	var failList []string
+	result1 := config.MYSQLDB.Table("student_questions").
+		Select("username").
+		Where("status != ? AND exam_id = ?", "pass", eid).
+		Not(config.MYSQLDB.Table("student_questions").Where("status = ?", "pass").Select("username")).
+		Pluck("username", &failList)
+	if result1.Error != nil {
+		error.Response(c, error.BadRequest, gin.H{}, "查询失败！")
+		return
+	}
+
+	for _, stu := range passList {
+		sesr.Username = stu
+		sesr.Status = "pass"
+		sesrl = append(sesrl, sesr)
+	}
+
+	for _, stu := range failList {
+		sesr.Username = stu
+		sesr.Status = "incomplete"
 		sesrl = append(sesrl, sesr)
 	}
 
