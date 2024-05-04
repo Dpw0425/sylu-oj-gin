@@ -45,6 +45,99 @@ const docTemplate = `{
                 }
             }
         },
+        "/exam/add_question": {
+            "post": {
+                "description": "添加题目到实验",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "description": "exam id and question id",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.AddQuestionToExam"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/error.ResponseNormal"
+                        }
+                    }
+                }
+            }
+        },
+        "/exam/inspect": {
+            "get": {
+                "description": "检查实验内题目的完成度",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "exam id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/error.ResponseNormal"
+                        }
+                    }
+                }
+            }
+        },
+        "/exam/list": {
+            "get": {
+                "description": "查看有关当前用户的全部实验",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "page number",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "number per page",
+                        "name": "number",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/error.ResponseNormal"
+                        }
+                    }
+                }
+            }
+        },
         "/question/add_question": {
             "post": {
                 "description": "发布题目",
@@ -389,11 +482,11 @@ const docTemplate = `{
                 "degree": {
                     "type": "integer"
                 },
-                "expected_output": {
-                    "type": "string"
-                },
-                "input_test": {
-                    "type": "string"
+                "io": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.TestData"
+                    }
                 },
                 "tag": {
                     "type": "array",
@@ -406,6 +499,20 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.AddQuestionToExam": {
+            "type": "object",
+            "properties": {
+                "exam_id": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
         "schema.Answer": {
             "type": "object",
             "properties": {
@@ -414,6 +521,17 @@ const docTemplate = `{
                 },
                 "id": {
                     "type": "integer"
+                }
+            }
+        },
+        "schema.TestData": {
+            "type": "object",
+            "properties": {
+                "input": {
+                    "type": "string"
+                },
+                "output": {
+                    "type": "string"
                 }
             }
         },

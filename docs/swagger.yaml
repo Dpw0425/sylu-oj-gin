@@ -26,10 +26,10 @@ definitions:
         type: string
       degree:
         type: integer
-      expected_output:
-        type: string
-      input_test:
-        type: string
+      io:
+        items:
+          $ref: '#/definitions/schema.TestData'
+        type: array
       tag:
         items:
           type: string
@@ -37,12 +37,28 @@ definitions:
       title:
         type: string
     type: object
+  schema.AddQuestionToExam:
+    properties:
+      exam_id:
+        type: integer
+      id:
+        items:
+          type: integer
+        type: array
+    type: object
   schema.Answer:
     properties:
       answer:
         type: string
       id:
         type: integer
+    type: object
+  schema.TestData:
+    properties:
+      input:
+        type: string
+      output:
+        type: string
     type: object
   schema.UserLogin:
     properties:
@@ -80,6 +96,66 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/schema.AddExam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/error.ResponseNormal'
+  /exam/add_question:
+    post:
+      consumes:
+      - application/json
+      description: 添加题目到实验
+      parameters:
+      - description: exam id and question id
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schema.AddQuestionToExam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/error.ResponseNormal'
+  /exam/inspect:
+    get:
+      consumes:
+      - application/json
+      description: 检查实验内题目的完成度
+      parameters:
+      - description: exam id
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/error.ResponseNormal'
+  /exam/list:
+    get:
+      consumes:
+      - application/json
+      description: 查看有关当前用户的全部实验
+      parameters:
+      - description: page number
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: number per page
+        in: query
+        name: number
+        required: true
+        type: integer
       produces:
       - application/json
       responses:

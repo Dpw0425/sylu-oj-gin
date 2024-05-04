@@ -7,38 +7,33 @@ import (
 	"sylu-oj-gin/internal/app/entity"
 	"sylu-oj-gin/internal/app/schema"
 	"sylu-oj-gin/pkg/error"
+	"sylu-oj-gin/pkg/utils"
 )
 
-func AddExam(c *gin.Context, sae schema.AddExam) {
+func AddExam(c *gin.Context, sae schema.AddExam, uid int) {
 	var ee entity.Exam
 
-	newDB := config.MYSQLDB.Session(&gorm.Session{NewDB: true})
-	tx := newDB.Begin()
-
-	for _, student := range sae.Student {
-		ee.Name = sae.Name
-		ee.Student = student
-		result := tx.Table("exams").Create(&ee)
-		if result.Error != nil {
-			error.Response(c, error.BadRequest, gin.H{}, "创建失败！")
-			tx.Rollback()
-			return
-		}
+	ee.Student = utils.ArrToString(sae.Student)
+	ee.Name = sae.Name
+	ee.OwnerID = uid
+	result := config.MYSQLDB.Table("exams").Create(&ee)
+	if result.Error != nil {
+		error.Response(c, error.BadRequest, gin.H{}, "创建失败！")
+		return
 	}
 
-	tx.Commit()
 	error.Response(c, error.OK, gin.H{}, "创建成功！")
 }
 
 func AddQuestionToExam(c *gin.Context, saq schema.AddQuestionToExam) {
 	var eqe entity.QuestionExam
 	var esq entity.StudentQuestion
-	var eel = make([]entity.Exam, 0)
+	var ee entity.Exam
 
 	newDB := config.MYSQLDB.Session(&gorm.Session{NewDB: true})
 	tx := newDB.Begin()
 
-	result := tx.Table("exams").Where("id = ?", saq.ExamID).Find(&eel)
+	result := tx.Table("exams").Where("id = ?", saq.ExamID).First(&ee)
 	if result.Error != nil {
 		error.Response(c, error.BadRequest, gin.H{}, "添加失败！")
 		tx.Rollback()
@@ -47,6 +42,7 @@ func AddQuestionToExam(c *gin.Context, saq schema.AddQuestionToExam) {
 
 	eqe.ExamID = saq.ExamID
 	esq.ExamID = saq.ExamID
+	stuList := utils.StringToArr(ee.Student)
 	for _, qid := range saq.ID {
 		eqe.QuestionID = qid
 		esq.QuestionID = qid
@@ -57,8 +53,8 @@ func AddQuestionToExam(c *gin.Context, saq schema.AddQuestionToExam) {
 			return
 		}
 
-		for _, stu := range eel {
-			esq.Username = stu.Student
+		for _, stu := range stuList {
+			esq.Username = stu
 			result1 := tx.Table("student_questions").Create(&esq)
 			if result1.Error != nil {
 				error.Response(c, error.BadRequest, gin.H{}, "添加失败！")
@@ -94,4 +90,61 @@ func Inspect(c *gin.Context, eid int) {
 	}
 
 	error.Response(c, error.OK, gin.H{"student": sesrl}, "查询成功！")
+}
+
+func ExamList(c *gin.Context, uid int, page int, number int) {
+	var eu entity.User
+	result := config.MYSQLDB.Table("users").Where("id = ?", uid).First(&eu)
+	if result.Error != nil {
+		error.Response(c, error.BadRequest, gin.H{}, "查询失败！")
+		return
+	}
+
+	var eel = make([]entity.Exam, 0)
+	var sel = make([]schema.ExamSummary, 0)
+	if eu.Authority == "admin" {
+		result := config.MYSQLDB.Table("exams").Find(&eel).Limit(number).Offset((page - 1) * number)
+		if result.Error != nil {
+			error.Response(c, error.BadRequest, gin.H{}, "查询失败！")
+			return
+		}
+
+		if result.RowsAffected == 0 {
+			error.Response(c, error.OK, gin.H{}, "暂无实验！")
+			return
+		}
+
+		var se schema.ExamSummary
+		for _, ee := range eel {
+			se.ID = ee.ID
+			se.Name = ee.Name
+			config.MYSQLDB.Table("question_exams").Where("exam_id = ?", ee.ID).Count(&se.QuestionNum)
+			se.StudentNum = int64(len(utils.StringToArr(ee.Student)))
+			sel = append(sel, se)
+		}
+
+		error.Response(c, error.OK, gin.H{"exam_list": sel}, "查询成功！")
+	} else {
+		result := config.MYSQLDB.Table("exams").Where("student LIKE ?", eu.Username).Find(&eel).Limit(number).Offset((page - 1) * number)
+		if result.Error != nil {
+			error.Response(c, error.BadRequest, gin.H{}, "查询失败！")
+			return
+		}
+
+		if result.RowsAffected == 0 {
+			error.Response(c, error.OK, gin.H{}, "暂无与您有关的实验！")
+			return
+		}
+
+		var se schema.ExamSummary
+		for _, ee := range eel {
+			se.ID = ee.ID
+			se.Name = ee.Name
+			config.MYSQLDB.Table("question_exams").Where("exam_id = ?", ee.ID).Count(&se.QuestionNum)
+			se.StudentNum = int64(len(utils.StringToArr(ee.Student)))
+			sel = append(sel, se)
+		}
+
+		error.Response(c, error.OK, gin.H{"exam_list": sel}, "查询成功！")
+	}
 }

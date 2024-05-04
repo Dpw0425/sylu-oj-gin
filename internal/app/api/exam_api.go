@@ -22,7 +22,10 @@ func AddExam(c *gin.Context) {
 		return
 	}
 
-	service.AddExam(c, sae)
+	id, _ := c.Get("UserID")
+	uid := id.(int)
+
+	service.AddExam(c, sae, uid)
 }
 
 // AddQuestionToExam @Summary 添加题目接口
@@ -53,4 +56,22 @@ func Inspect(c *gin.Context) {
 	eid, _ := strconv.Atoi(c.Query("id"))
 
 	service.Inspect(c, eid)
+}
+
+// ExamList @Summary 获取实验列表
+// @Description 查看有关当前用户的全部实验
+// @Param page query int true "page number"
+// @Param number query int true "number per page"
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  error.ResponseNormal
+// @Router       /exam/list [get]
+func ExamList(c *gin.Context) {
+	page, _ := strconv.Atoi(c.Query("page"))
+	number, _ := strconv.Atoi(c.Query("number"))
+
+	id, _ := c.Get("UserID")
+	uid := id.(int)
+
+	service.ExamList(c, uid, page, number)
 }

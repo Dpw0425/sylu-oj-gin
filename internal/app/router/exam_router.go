@@ -11,9 +11,10 @@ func ExamRouter(app *gin.Engine) {
 	{
 		exam.Use(middleware.Auth())
 		{
-			exam.POST("/add_exam", api.AddExam)
-			exam.POST("/add_question", api.AddQuestionToExam)
-			exam.GET("/inspect", api.Inspect)
+			exam.POST("/add_exam", api.AddExam)               // 创建实验
+			exam.POST("/add_question", api.AddQuestionToExam) // 向实验中添加题目
+			exam.GET("/inspect", api.Inspect)                 // 检查进度
+			exam.GET("/list", api.ExamList)                   // 实验列表
 		}
 	}
 }
