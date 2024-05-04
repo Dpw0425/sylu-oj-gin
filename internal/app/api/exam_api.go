@@ -53,9 +53,10 @@ func AddQuestionToExam(c *gin.Context) {
 // @Success      200  {object}  error.ResponseNormal
 // @Router       /exam/inspect [get]
 func Inspect(c *gin.Context) {
-	eid, _ := strconv.Atoi(c.Query("id"))
+	eid, _ := strconv.Atoi(c.Query("eid"))
+	qid, _ := strconv.Atoi(c.Query("qid"))
 
-	service.Inspect(c, eid)
+	service.Inspect(c, eid, qid)
 }
 
 // ExamList @Summary 获取实验列表

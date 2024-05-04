@@ -68,11 +68,11 @@ func AddQuestionToExam(c *gin.Context, saq schema.AddQuestionToExam) {
 	error.Response(c, error.OK, gin.H{}, "添加成功！")
 }
 
-func Inspect(c *gin.Context, eid int) {
+func Inspect(c *gin.Context, eid, qid int) {
 	var esql = make([]entity.StudentQuestion, 0)
 	var sesrl = make([]schema.ExamStatusResp, 0)
 	var sesr schema.ExamStatusResp
-	result := config.MYSQLDB.Table("student_questions").Where("exam_id = ?", eid).Find(&esql)
+	result := config.MYSQLDB.Table("student_questions").Where("exam_id = ? and question_id = ?", eid, qid).Find(&esql)
 	if result.Error != nil {
 		error.Response(c, error.BadRequest, gin.H{}, "查询失败！")
 		return
