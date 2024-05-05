@@ -11,6 +11,18 @@ import (
 )
 
 func AddQuestion(c *gin.Context, saq schema.AddQuestion, uid int) {
+	var isExist entity.Question
+	result1 := config.MYSQLDB.Table("questions").Where("title = ? AND tag = ? AND degree = ?", saq.Title, utils.ArrToString(saq.Tag), saq.Degree).First(&isExist)
+	if result1.Error != nil {
+		error.Response(c, error.BadRequest, gin.H{}, "添加失败！")
+		return
+	}
+
+	if result1.RowsAffected != 0 {
+		UpdateQuestion(c, isExist, saq)
+		return
+	}
+
 	newDB := config.MYSQLDB.Session(&gorm.Session{NewDB: true})
 	tx := newDB.Begin()
 
@@ -197,4 +209,18 @@ func DelQuestion(c *gin.Context, qid int, uid int) {
 
 	tx.Commit()
 	error.Response(c, error.OK, gin.H{}, "删除成功！")
+}
+
+func UpdateQuestion(c *gin.Context, eq entity.Question, saq schema.AddQuestion) {
+	eq.Title = saq.Title
+	eq.Content = saq.Content
+	eq.Tag = utils.ArrToString(saq.Tag)
+	eq.Degree = saq.Degree
+	result := config.MYSQLDB.Table("questions").Where("id = ?", eq.ID).Updates(&eq)
+	if result.Error != nil {
+		error.Response(c, error.BadRequest, gin.H{}, "修改失败！")
+		return
+	}
+
+	error.Response(c, error.OK, gin.H{}, "修改成功！")
 }
