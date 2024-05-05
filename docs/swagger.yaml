@@ -122,6 +122,24 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/error.ResponseNormal'
+  /exam/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查看实验具体信息
+      parameters:
+      - description: exam id
+        in: query
+        name: eid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/error.ResponseNormal'
   /exam/inspect:
     get:
       consumes:

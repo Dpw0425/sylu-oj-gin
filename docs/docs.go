@@ -75,6 +75,34 @@ const docTemplate = `{
                 }
             }
         },
+        "/exam/detail": {
+            "get": {
+                "description": "查看实验具体信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "exam id",
+                        "name": "eid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/error.ResponseNormal"
+                        }
+                    }
+                }
+            }
+        },
         "/exam/inspect": {
             "get": {
                 "description": "检查实验内题目的完成度",
