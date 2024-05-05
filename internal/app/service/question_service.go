@@ -104,7 +104,15 @@ func QuestionList(c *gin.Context, page int, number int, searchTitle string, sear
 		sqml = append(sqml, sqm)
 	}
 
-	error.Response(c, error.OK, gin.H{"question_list": sqml}, "查询成功！")
+	var total int64
+	config.MYSQLDB.Table("questions").Count(&total)
+	if total%int64(number) != 0 {
+		total = total/int64(number) + 1
+	} else {
+		total /= int64(number)
+	}
+
+	error.Response(c, error.OK, gin.H{"question_list": sqml, "total": total}, "查询成功！")
 }
 
 func GetQuestionMsg(c *gin.Context, id int) {
