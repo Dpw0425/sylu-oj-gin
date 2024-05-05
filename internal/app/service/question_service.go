@@ -180,7 +180,8 @@ func DelQuestion(c *gin.Context, qid int, uid int) {
 		return
 	}
 
-	tx := config.MYSQLDB.Begin()
+	newDB := config.MYSQLDB.Session(&gorm.Session{NewDB: true})
+	tx := newDB.Begin()
 	result1 := tx.Table("questions").Where("id = ?", qid).Delete(&eq)
 	if result1.Error != nil {
 		error.Response(c, error.BadRequest, gin.H{}, "删除失败！")
