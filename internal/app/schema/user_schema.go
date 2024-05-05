@@ -22,7 +22,7 @@ type UserInfo struct {
 	Identity string         `json:"identity"`
 	Info     AccountInfo    `json:"info"`
 	Menu     []ResponseMenu `json:"menu"`
-	Students []Student      `json:"students"`
+	Students []string       `json:"students"`
 }
 
 type AccountInfo struct {
@@ -30,9 +30,4 @@ type AccountInfo struct {
 	StartTime string `json:"startTime"`
 	Submit    int64  `json:"submit"`
 	Accept    int64  `json:"Accept"`
-}
-
-type Student struct {
-	ID   uint   `json:"id"`
-	Name string `json:"name"`
 }

@@ -109,7 +109,7 @@ func UserInfo(c *gin.Context, id int) {
 	config.MYSQLDB.Table("answers").Select("COUNT(DISTINCT question_id)").Where("user_id = ?", eu.ID).Scan(&sui.Info.Submit)
 	config.MYSQLDB.Table("answers").Select("COUNT(DISTINCT question_id)").Where("user_id = ? AND status = ?", eu.ID, "Accepted").Scan(&sui.Info.Accept)
 
-	config.MYSQLDB.Table("users").Select("id, username AS name").Where("authority = ?", "stu").Find(&sui.Students)
+	config.MYSQLDB.Table("users").Select("username AS name").Where("authority = ?", "stu").Find(&sui.Students)
 
 	error.Response(c, error.OK, gin.H{"identity": sui.Identity, "menu": sui.Menu, "info": sui.Info, "students": sui.Students}, "欢迎！")
 }
