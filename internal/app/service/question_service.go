@@ -187,11 +187,6 @@ func DelQuestion(c *gin.Context, qid int, uid int) {
 		return
 	}
 
-	if eq.OwnerID != uid {
-		error.Response(c, error.BadRequest, gin.H{}, "您无权删除！")
-		return
-	}
-
 	newDB := config.MYSQLDB.Session(&gorm.Session{NewDB: true})
 	tx := newDB.Begin()
 	result1 := tx.Table("questions").Where("id = ?", qid).Delete(&eq)
