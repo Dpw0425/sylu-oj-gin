@@ -47,58 +47,40 @@ func AddQuestion(c *gin.Context, saq schema.AddQuestion, uid int) {
 func QuestionList(c *gin.Context, page int, number int, searchTitle string, searchTag string, searchDegree int, order int) {
 	var sqml = make([]schema.QuestionMsg, 0)
 	var eql = make([]entity.Question, 0)
-	var sql = "SELECT * FROM questions "
-	var flag = 0
 	var result *gorm.DB
+
+	query := config.MYSQLDB.Model(&entity.Question{})
+
 	if searchTitle != "" {
-		sql = sql + "WHERE title LIKE '" + searchTitle + "' "
-		flag++
+		query = query.Where("title LIKE ?", "%"+searchTitle+"%")
 	}
+
 	if searchTag != "" {
-		if flag != 0 {
-			sql = sql + "AND tag LIKE '" + searchTag + "' "
-		} else {
-			sql = sql + "WHERE tag LIKE '" + searchTag + "' "
-			flag++
-		}
+		query = query.Where("tag LIKE ?", "%"+searchTag+"%")
 	}
+
 	if searchDegree != 0 {
-		if flag != 0 {
-			result = config.MYSQLDB.Limit(number).Offset((page-1)*number).Raw(sql+"AND degree = ?", searchDegree).Find(&eql)
-		} else {
-			result = config.MYSQLDB.Limit(number).Offset((page-1)*number).Raw(sql+"WHERE degree = ?", searchDegree).Find(&eql)
-		}
-		if result.Error != nil {
-			error.Response(c, error.BadRequest, gin.H{}, "查询失败！")
-			return
-		}
-		if result.RowsAffected == 0 {
-			error.Response(c, error.BadRequest, gin.H{}, "暂无符合条件的记录！")
-			return
-		}
-		flag = 10
+		query = query.Where("degree = ?", searchDegree)
 	}
 
 	if order != 0 {
 		if order == 1 {
-			sql = sql + "ORDER BY degree ASC"
+			query = query.Order("degree ASC")
 		} else {
-			sql = sql + "ORDER BY degree DESC"
+			query = query.Order("degree DESC")
 		}
 	}
 
-	sql = sql + ";"
+	result = query.Limit(number).Offset((page - 1) * number).Find(&eql)
 
-	if flag != 10 {
-		result = config.MYSQLDB.Limit(number).Offset((page - 1) * number).Raw(sql).Find(&eql)
-		if result.Error != nil {
-			error.Response(c, error.BadRequest, gin.H{}, "查询失败！")
-			return
-		}
-		if result.RowsAffected == 0 {
-			error.Response(c, error.BadRequest, gin.H{}, "暂无符合条件的记录！")
-			return
-		}
+	if result.Error != nil {
+		error.Response(c, error.BadRequest, gin.H{}, "查询失败！")
+		return
+	}
+
+	if result.RowsAffected == 0 {
+		error.Response(c, error.BadRequest, gin.H{}, "暂无符合条件的记录！")
+		return
 	}
 
 	var sqm schema.QuestionMsg
