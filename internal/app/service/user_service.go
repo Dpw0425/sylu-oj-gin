@@ -104,5 +104,12 @@ func UserInfo(c *gin.Context, id int) {
 		})
 	}
 
-	error.Response(c, error.OK, gin.H{"identity": sui.Identity, "menu": sui.Menu}, "欢迎！")
+	sui.Info.Username = eu.Username
+	sui.Info.StartTime = eu.CreatedAt.Format("2024-05-05 17:34:48.000")
+	config.MYSQLDB.Table("answers").Select("COUNT(DISTINCT question_id)").Where("user_id = ?", eu.ID).Scan(&sui.Info.Submit)
+	config.MYSQLDB.Table("answers").Select("COUNT(DISTINCT question_id)").Where("user_id = ? AND status = ?", eu.ID, "Accepted").Scan(&sui.Info.Accept)
+
+	config.MYSQLDB.Table("users").Select("id, username AS name").Where("authority = ?", "stu").Find(&sui.Students)
+
+	error.Response(c, error.OK, gin.H{"identity": sui.Identity, "menu": sui.Menu, "info": sui.Info, "students": sui.Students}, "欢迎！")
 }

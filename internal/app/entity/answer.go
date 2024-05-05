@@ -7,4 +7,5 @@ type Answer struct {
 	QuestionID uint   `json:"question_id"`
 	Answer     string `json:"answer"`
 	UserID     int    `json:"user_id"`
+	Status     string `json:"status"`
 }

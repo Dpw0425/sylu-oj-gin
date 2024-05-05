@@ -176,6 +176,8 @@ func CommitAnswer(c *gin.Context, sa schema.Answer, uid int) {
 		config.MYSQLDB.Table("student_questions").Where("question_id = ? AND username IN (SELECT username FROM users WHERE users.id = ?)", sa.ID, uid).Update("status", "fail")
 	}
 
+	config.MYSQLDB.Table("answers").Where("id = ?", ea.ID).Update("status = ?", result2)
+
 	error.Response(c, error.OK, gin.H{"result": result2}, "提交成功！")
 }
 
