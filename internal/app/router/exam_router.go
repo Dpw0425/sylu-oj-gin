@@ -15,6 +15,7 @@ func ExamRouter(app *gin.Engine) {
 			exam.POST("/add_question", api.AddQuestionToExam) // 向实验中添加题目
 			exam.GET("/inspect", api.Inspect)                 // 检查进度
 			exam.GET("/list", api.ExamList)                   // 实验列表
+			exam.GET("/detail", api.ExamDetail)               // 实验详情
 		}
 	}
 }

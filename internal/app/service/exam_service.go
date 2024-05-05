@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"sylu-oj-gin/internal/app/config"
@@ -73,7 +74,6 @@ func Inspect(c *gin.Context, eid int) {
 	var sesr schema.ExamStatusResp
 
 	var passList []string
-	// 获取实验内的全部学生
 	result := config.MYSQLDB.Table("student_questions").
 		Select("username").
 		Where("status = ? AND exam_id = ?", "pass", eid).
@@ -166,4 +166,36 @@ func ExamList(c *gin.Context, uid int, page int, number int) {
 
 		error.Response(c, error.OK, gin.H{"exam_list": sel}, "查询成功！")
 	}
+}
+
+func ExamDetail(c *gin.Context, eid int) {
+	var ee entity.Exam
+	result := config.MYSQLDB.Table("exams").Where("id = ?", eid).First(&ee)
+	if result.Error != nil {
+		error.Response(c, error.BadRequest, gin.H{}, "查询失败！")
+		return
+	}
+
+	var eqel = make([]entity.QuestionExam, 0)
+	result1 := config.MYSQLDB.Table("question_exams").Where("exam_id = ?", eid).Find(&eqel)
+	if result1.Error != nil {
+		error.Response(c, error.BadRequest, gin.H{}, "查询失败！")
+		return
+	}
+
+	var seqil = make([]schema.ExamQuestionInfo, 0)
+	var seqi schema.ExamQuestionInfo
+	for _, eqe := range eqel {
+		var totalStu int64
+		config.MYSQLDB.Table("student_questions").Where("question_id = ?", eqe.QuestionID).Count(&totalStu)
+		var passStu int64
+		config.MYSQLDB.Table("student_questions").Where("question_id = ? AND status = ?", eqe.QuestionID, "pass").Count(&passStu)
+		passingRate := float64(passStu) / float64(totalStu) * 100
+		seqi.ID = eqe.QuestionID
+		config.MYSQLDB.Table("questions").Select("title").Where("id = ?", eqe.QuestionID).Pluck("title", &seqi.Title)
+		seqi.PassingRate = fmt.Sprintf("%.1f", passingRate) + "%"
+		seqil = append(seqil, seqi)
+	}
+
+	error.Response(c, error.OK, gin.H{"question_list": seqil}, "查询成功！")
 }

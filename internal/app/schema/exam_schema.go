@@ -21,3 +21,9 @@ type ExamSummary struct {
 	QuestionNum int64  `json:"question_num"`
 	StudentNum  int64  `json:"student_num"`
 }
+
+type ExamQuestionInfo struct {
+	ID          int    `json:"id"`
+	Title       string `json:"title"`
+	PassingRate string `json:"passing_rate"`
+}

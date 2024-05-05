@@ -75,3 +75,16 @@ func ExamList(c *gin.Context) {
 
 	service.ExamList(c, uid, page, number)
 }
+
+// ExamDetail @Summary 获取实验详情
+// @Description 查看实验具体信息
+// @Param eid query int true "exam id"
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  error.ResponseNormal
+// @Router       /exam/detail [get]
+func ExamDetail(c *gin.Context) {
+	eid, _ := strconv.Atoi(c.Query("id"))
+
+	service.ExamDetail(c, eid)
+}
