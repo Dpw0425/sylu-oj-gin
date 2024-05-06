@@ -90,18 +90,6 @@ func UserInfo(c *gin.Context, id int) {
 			Title: "添加题目",
 			Path:  "/console/addproblem",
 		})
-	} else {
-		sui.Identity = "guest"
-		sui.Menu = append(sui.Menu, schema.ResponseMenu{
-			ID:    "1",
-			Title: "个人主页",
-			Path:  "/user",
-		})
-		sui.Menu = append(sui.Menu, schema.ResponseMenu{
-			ID:    "2",
-			Title: "退出登录",
-			Path:  "/logout",
-		})
 	}
 
 	sui.Info.Username = eu.Username
