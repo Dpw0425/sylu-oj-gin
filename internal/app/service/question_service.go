@@ -13,11 +13,6 @@ import (
 func AddQuestion(c *gin.Context, saq schema.AddQuestion, uid int) {
 	var isExist entity.Question
 	result1 := config.MYSQLDB.Table("questions").Where("title = ? AND tag = ? AND degree = ?", saq.Title, utils.ArrToString(saq.Tag), saq.Degree).First(&isExist)
-	if result1.Error != nil {
-		error.Response(c, error.BadRequest, gin.H{}, "添加失败！")
-		return
-	}
-
 	if result1.RowsAffected != 0 {
 		UpdateQuestion(c, isExist, saq)
 		return
