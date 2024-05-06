@@ -61,6 +61,21 @@ func QuestionList(c *gin.Context, page int, number int, searchTitle string, sear
 	var eql = make([]entity.Question, 0)
 	var result *gorm.DB
 
+	if page == 0 && number == 0 {
+		config.MYSQLDB.Table("questions").Find(&eql)
+		var sqm schema.QuestionMsg
+		for _, eq := range eql {
+			sqm.ID = eq.ID
+			sqm.Tag = utils.StringToArr(eq.Tag)
+			sqm.Title = eq.Title
+			sqm.Degree = eq.Degree
+			sqml = append(sqml, sqm)
+		}
+
+		error.Response(c, error.OK, gin.H{"question_list": sqml}, "查询成功！")
+		return
+	}
+
 	query := config.MYSQLDB.Model(&entity.Question{})
 
 	if searchTitle != "" {
