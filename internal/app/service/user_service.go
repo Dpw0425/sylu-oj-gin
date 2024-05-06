@@ -8,6 +8,7 @@ import (
 	"sylu-oj-gin/pkg/error"
 	"sylu-oj-gin/pkg/logger"
 	"sylu-oj-gin/pkg/utils"
+	"time"
 )
 
 func Register(c *gin.Context, sur schema.UserRegister) {
@@ -90,10 +91,12 @@ func UserInfo(c *gin.Context, id int) {
 			Title: "添加题目",
 			Path:  "/console/addproblem",
 		})
+	} else {
+		sui.Identity = "stu"
 	}
 
 	sui.Info.Username = eu.Username
-	sui.Info.StartTime = eu.CreatedAt.Format("2024-05-05 17:34:48.000")
+	sui.Info.StartTime = eu.CreatedAt.Format(time.RFC3339)
 	config.MYSQLDB.Table("answers").Select("COUNT(DISTINCT question_id)").Where("user_id = ?", eu.ID).Scan(&sui.Info.Submit)
 	config.MYSQLDB.Table("answers").Select("COUNT(DISTINCT question_id)").Where("user_id = ? AND status = ?", eu.ID, "Accepted").Scan(&sui.Info.Accept)
 
