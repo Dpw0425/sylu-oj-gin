@@ -78,7 +78,7 @@ func Inspect(c *gin.Context, eid int) {
 		Select("username").
 		Where("status = ? AND exam_id = ?", "pass", eid).
 		Group("username").
-		Having("COUNT(DISTINCT question_id) = ?", config.MYSQLDB.Table("student_questions").Where("status = ?", "pass").Select("COUNT(DISTINCT question_id)")).
+		Having("COUNT(DISTINCT question_id) = (?)", config.MYSQLDB.Table("student_questions").Where("status = ?", "pass").Select("COUNT(DISTINCT question_id)")).
 		Pluck("username", &passList)
 	if result.Error != nil {
 		error.Response(c, error.BadRequest, gin.H{}, "查询失败！")
@@ -99,12 +99,14 @@ func Inspect(c *gin.Context, eid int) {
 	for _, stu := range passList {
 		sesr.Username = stu
 		sesr.Status = "pass"
+		config.MYSQLDB.Table("users").Where("username = ?", stu).Pluck("id", &sesr.ID)
 		sesrl = append(sesrl, sesr)
 	}
 
 	for _, stu := range failList {
 		sesr.Username = stu
 		sesr.Status = "incomplete"
+		config.MYSQLDB.Table("users").Where("username = ?", stu).Pluck("id", &sesr.ID)
 		sesrl = append(sesrl, sesr)
 	}
 

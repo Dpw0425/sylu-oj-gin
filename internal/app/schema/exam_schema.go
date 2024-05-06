@@ -11,6 +11,7 @@ type AddQuestionToExam struct {
 }
 
 type ExamStatusResp struct {
+	ID       int    `json:"id"`
 	Username string `json:"username"` // 用户名 (学号)
 	Status   string `json:"status"`
 }
