@@ -189,9 +189,9 @@ func ExamDetail(c *gin.Context, eid int) {
 	var seqi schema.ExamQuestionInfo
 	for _, eqe := range eqel {
 		var totalStu int64
-		config.MYSQLDB.Table("student_questions").Where("question_id = ?", eqe.QuestionID).Count(&totalStu)
+		config.MYSQLDB.Table("student_questions").Where("question_id = ? AND exam_id = ?", eqe.QuestionID, eid).Count(&totalStu)
 		var passStu int64
-		config.MYSQLDB.Table("student_questions").Where("question_id = ? AND status = ?", eqe.QuestionID, "pass").Count(&passStu)
+		config.MYSQLDB.Table("student_questions").Where("question_id = ? AND status = ? AND exam_id = ?", eqe.QuestionID, "pass", eid).Count(&passStu)
 		passingRate := float64(passStu) / float64(totalStu) * 100
 		seqi.ID = eqe.QuestionID
 		config.MYSQLDB.Table("questions").Select("title").Where("id = ?", eqe.QuestionID).Pluck("title", &seqi.Title)
