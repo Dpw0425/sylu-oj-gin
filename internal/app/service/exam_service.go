@@ -193,7 +193,7 @@ func ExamDetail(c *gin.Context, eid int) {
 		passingRate := float64(passStu) / float64(totalStu) * 100
 		seqi.ID = eqe.QuestionID
 		config.MYSQLDB.Table("questions").Select("title").Where("id = ?", eqe.QuestionID).Pluck("title", &seqi.Title)
-		seqi.PassingRate = fmt.Sprintf("%.1f", passingRate) + "%"
+		seqi.PassingRate = fmt.Sprintf("%.1f", passingRate)
 		seqil = append(seqil, seqi)
 	}
 
