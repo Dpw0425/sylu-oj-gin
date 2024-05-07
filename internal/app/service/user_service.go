@@ -82,11 +82,6 @@ func UserInfo(c *gin.Context, id int) {
 			Path:  "/console/problem",
 		})
 		sui.Menu = append(sui.Menu, schema.ResponseMenu{
-			ID:    "4",
-			Title: "用户管理",
-			Path:  "/console/user",
-		})
-		sui.Menu = append(sui.Menu, schema.ResponseMenu{
 			ID:    "5",
 			Title: "添加题目",
 			Path:  "/console/addproblem",
@@ -101,6 +96,10 @@ func UserInfo(c *gin.Context, id int) {
 	config.MYSQLDB.Table("answers").Select("COUNT(DISTINCT question_id)").Where("user_id = ? AND status = ?", eu.ID, "Accepted").Scan(&sui.Info.Accept)
 
 	config.MYSQLDB.Table("users").Select("username AS name").Where("authority = ?", "stu").Find(&sui.Students)
+
+	if eu.Authority != "admin" {
+		sui.Students = nil
+	}
 
 	error.Response(c, error.OK, gin.H{"identity": sui.Identity, "menu": sui.Menu, "info": sui.Info, "students": sui.Students}, "欢迎！")
 }

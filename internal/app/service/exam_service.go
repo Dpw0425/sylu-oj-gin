@@ -45,8 +45,16 @@ func AddQuestionToExam(c *gin.Context, saq schema.AddQuestionToExam) {
 	esq.ExamID = saq.ExamID
 	stuList := utils.StringToArr(ee.Student)
 	for _, qid := range saq.ID {
+		eqe.ID = 0
 		eqe.QuestionID = qid
 		esq.QuestionID = qid
+
+		var i int64
+		config.MYSQLDB.Table("question_exams").Where("exam_id = ? AND question_id = ?", saq.ExamID, qid).Count(&i)
+		if i != 0 {
+			continue
+		}
+
 		result := tx.Table("question_exams").Create(&eqe)
 		if result.Error != nil {
 			error.Response(c, error.BadRequest, gin.H{}, "添加失败！")
@@ -55,6 +63,7 @@ func AddQuestionToExam(c *gin.Context, saq schema.AddQuestionToExam) {
 		}
 
 		for _, stu := range stuList {
+			esq.ID = 0
 			esq.Username = stu
 			result1 := tx.Table("student_questions").Create(&esq)
 			if result1.Error != nil {
